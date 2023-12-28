@@ -13,7 +13,9 @@
 - user Profile , Saved Content
 - Post Story
 - Featured Content
-(Unique Features we will Implemented)
+
+
+***(Unique Features we will Implemented)***
 - AI Generated Captions for Posts
 - Auto-Trimmed Videos
 - Personalized Tag System (Home,College,school,work) for Friend requests/suggestions
