@@ -1,6 +1,33 @@
 # socialseed
 
-Final Year project
+``` Final Year Project```
+
+## Features
+
+- Post Image/Video/Text
+- Add Friend / Send Request
+- Push Notification
+- Friend Suggestions
+- Public/Private Group
+- Pages, Events
+- user Profile , Saved Content
+- Post Story
+- Featured Content
+(Unique Features we will Implemented)
+- AI Generated Captions for Posts
+- Auto-Trimmed Videos
+- Personalized Tag System (Home,College,school,work) for Friend requests/suggestions
+- Archived Posts
+- Chat Integration (E2E encryption)
+- Milestone Badges (10,50,100......)
+- Privacy & Security Measures
+
+## Team Members
+
+- Kuntal Gain
+- Abhisekh Rajak
+- Rupam Das
+- Abhishak Biswas
 
 ## Branches
 
