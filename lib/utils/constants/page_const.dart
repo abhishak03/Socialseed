@@ -1,3 +1,5 @@
+import 'package:flutter/material.dart';
+
 class PageConst {
   static const String loginPage = "login";
   static const String homePage = "home";
@@ -17,4 +19,12 @@ class PageConst {
   static const String profileDetailPage = "profile_detail";
   static const String friendDetailPage = "friend_detail";
   static const String friendRequestPage = "friend_request";
+}
+
+Widget sizeVar(double height) {
+  return SizedBox(height: height);
+}
+
+Widget sizeHor(double width) {
+  return SizedBox(width: width);
 }

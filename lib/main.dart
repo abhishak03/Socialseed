@@ -1,7 +1,15 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:socialseed/app/widgets/opacity_leaf_animation.dart';
+import 'package:socialseed/app/screens/signup_screen.dart';
+import 'package:socialseed/firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(const MyApp());
 }
 
@@ -10,10 +18,9 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: const OpacityAnimationBetweenLeaves(),
-      ),
+    return const MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: SignUpScreen(),
     );
   }
 }

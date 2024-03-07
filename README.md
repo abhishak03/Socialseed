@@ -61,3 +61,7 @@
   git clone https://github.com/{@YourGitHubUserID}/Socialseed.git
  ```
 
+## Contributors
+
+<a href="https://github.com/KuntalGain/Weatheify/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=KuntalGain/Weatherify" />
