@@ -11,6 +11,7 @@ class TextConst {
     ));
   }
 
+  // ignore: non_constant_identifier_names
   static TextStyle MediumStyle(double size, Color? color) {
     return GoogleFonts.montserrat(
         textStyle: TextStyle(
@@ -20,6 +21,7 @@ class TextConst {
     ));
   }
 
+  // ignore: non_constant_identifier_names
   static TextStyle RegularStyle(double size, Color? color) {
     return GoogleFonts.montserrat(
         textStyle: TextStyle(

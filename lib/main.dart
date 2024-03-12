@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:socialseed/app/screens/signup_screen.dart';
-import 'package:socialseed/firebase_options.dart';
+import 'package:socialseed/app/widgets/opacity_leaf_animation.dart';
+import 'package:socialseed/firebase_options.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: SignUpScreen(),
+      home: SplashScreen(),
     );
   }
 }

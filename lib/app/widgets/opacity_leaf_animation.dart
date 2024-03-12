@@ -1,17 +1,94 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
+import '../screens/signup_screen.dart';
 
-class OpacityAnimationBetweenLeaves extends StatefulWidget {
-  const OpacityAnimationBetweenLeaves({super.key});
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: SplashScreen(),
+    );
+  }
+}
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
 
   @override
   // ignore: library_private_types_in_public_api
-  _OpacityAnimationBetweenLeavesState createState() =>
-      _OpacityAnimationBetweenLeavesState();
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _OpacityAnimationBetweenLeavesState
-    extends State<OpacityAnimationBetweenLeaves>
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Timer(const Duration(seconds: 2), () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const NewScreen()),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.white,
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              'assets/leafImage.png.png', // Replace with your leaf image path
+              width: 200,
+              height: 200,
+            ),
+            const SizedBox(height: 30),
+            const Text(
+              'SOCIAL SEED',
+              style: TextStyle(
+                color: Colors.red,
+                fontSize: 40,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class NewScreen extends StatelessWidget {
+  const NewScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      backgroundColor: Colors.red, // Red background color
+      body: Center(
+        child: OpacityAnimationWidget(),
+      ),
+    );
+  }
+}
+
+class OpacityAnimationWidget extends StatefulWidget {
+  const OpacityAnimationWidget({super.key});
+
+  @override
+  // ignore: library_private_types_in_public_api
+  _OpacityAnimationWidgetState createState() => _OpacityAnimationWidgetState();
+}
+
+class _OpacityAnimationWidgetState extends State<OpacityAnimationWidget>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _opacityAnimation;
@@ -21,91 +98,95 @@ class _OpacityAnimationBetweenLeavesState
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 2),
+      duration: const Duration(seconds: 3), // Total duration for the animations
     );
 
-    _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+    _opacityAnimation = Tween<double>(
+      begin: 0,
+      end: 1,
+    ).animate(
       CurvedAnimation(
         parent: _controller,
-        curve: const Interval(0.5, 1.0,
-            curve: Curves
-                .easeInOut), // Delay the appearance of the second leaf by 0.5 seconds
+        curve: const Interval(0, 0.3), // Opacity animation duration
       ),
     );
 
-    _controller.forward();
+    _controller.forward(); // Start the animation
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        // ignore: sized_box_for_whitespace
+        return Padding(
+          padding: const EdgeInsets.all(10),
+          child: Container(
+            width: MediaQuery.of(context).size.width - 50,
+            height: MediaQuery.of(context).size.height - 50,
+            color: Colors.white,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                if (_controller.value >= 0.3)
+                  Opacity(
+                    opacity: _opacityAnimation.value,
+                    child: Center(
+                      child: Image.asset(
+                        'assets/17257295_2004.i305.008_office_scenes_set-04.jpg', // Replace with your image path
+                        width: 300,
+                        height: 300,
+                      ),
+                    ),
+                  ),
+                if (_controller.value >= 0.6)
+                  Positioned(
+                    top: 520,
+                    child: Opacity(
+                      opacity: _opacityAnimation.value,
+                      child: const Text(
+                        'Feuling Connections,\nSparking',
+                        style: TextStyle(fontSize: 24,
+                        color:Colors.red,
+                        fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                  ),
+                if (_controller.value >= 0.9)
+                  Positioned(
+                    bottom: 50 + (_controller.value - 0.9) * 100,
+                    child: Opacity(
+                      opacity: _opacityAnimation.value,
+                      child: ElevatedButton(
+                       
+                        onPressed: () {
+                          Navigator.push(
+                          context,  
+                       MaterialPageRoute(builder: (context) => const SignUpScreen())
+                      );
+                      },
+                         style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.red,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.all(10)
+                        ),
+                        child: const Text('Start your Journey Now'),
+                      ),
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        children: [
-          CustomPaint(
-            size: const Size(300, 200),
-            painter: LeafPainter(
-              opacityAnimation: _opacityAnimation,
-            ),
-          ),
-          const SizedBox(height: 50),
-          const Text(
-            "socialseed",
-            style: TextStyle(
-                fontSize: 48, color: Colors.red, fontWeight: FontWeight.bold),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class LeafPainter extends CustomPainter {
-  final Animation<double> opacityAnimation;
-
-  LeafPainter({required this.opacityAnimation})
-      : super(repaint: opacityAnimation);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    canvas.translate(size.width / 2,
-        size.height / 2 - 120); // Move to the center of the canvas
-    canvas.rotate(math.pi / 4); // Rotate the canvas by 45 degrees
-    // Define path for the first leaf
-    final Path path1 = Path();
-    path1.moveTo(size.width / 2, size.height);
-    path1.quadraticBezierTo(
-        size.width * 0.68, size.height * 0.5, size.width / 2, 0);
-    path1.quadraticBezierTo(
-        size.width * 0.32, size.height * 0.5, size.width / 2, size.height);
-
-    // Draw the first leaf with full opacity
-    Paint paint1 = Paint()
-      ..color = Colors.red
-      ..style = PaintingStyle.fill;
-    canvas.drawPath(path1, paint1);
-
-    // Define path for the second leaf
-    final Path path2 = Path();
-    path2.moveTo(size.width - 150, size.height + 20);
-    path2.quadraticBezierTo(
-        size.width * 0.28, size.height * 0.5, size.width - 150, 0);
-    path2.quadraticBezierTo(size.width * 0.15, size.height * 0.5,
-        size.width - 150, size.height + 20);
-    // Draw the second leaf with opacity animation
-    Paint paint2 = Paint()
-      ..color = Colors.red.withOpacity(opacityAnimation.value)
-      ..style = PaintingStyle.fill;
-    canvas.drawPath(path2, paint2);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return false;
   }
 }
