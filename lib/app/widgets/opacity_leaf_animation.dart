@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:socialseed/utils/constants/color_const.dart';
 import '../screens/signup_screen.dart';
 
 void main() {
@@ -72,7 +74,7 @@ class NewScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: Colors.red, // Red background color
+      backgroundColor: Colors.white, // Red background color
       body: Center(
         child: OpacityAnimationWidget(),
       ),
@@ -129,13 +131,25 @@ class _OpacityAnimationWidgetState extends State<OpacityAnimationWidget>
             child: Stack(
               alignment: Alignment.center,
               children: [
+                if (_controller.value >= 0)
+                  Positioned(
+                    top: 10, // Adjust the position as needed
+                    child: Opacity(
+                      opacity: _controller.value,
+                      child: Image.asset(
+                        'assets/logo.png',
+                        width: 360, // Adjust the width as needed
+                        height: 200, // Adjust the height as needed
+                      ),
+                    ),
+                  ),
                 if (_controller.value >= 0.3)
                   Opacity(
                     opacity: _opacityAnimation.value,
                     child: Center(
                       child: Image.asset(
-                        'assets/17257295_2004.i305.008_office_scenes_set-04.jpg', // Replace with your image path
-                        width: 300,
+                        'assets/splash.jpg', // Replace with your image path
+                        width: double.infinity,
                         height: 300,
                       ),
                     ),
@@ -146,33 +160,44 @@ class _OpacityAnimationWidgetState extends State<OpacityAnimationWidget>
                     child: Opacity(
                       opacity: _opacityAnimation.value,
                       child: const Text(
-                        'Feuling Connections,\nSparking',
-                        style: TextStyle(fontSize: 24,
-                        color:Colors.red,
-                        fontWeight: FontWeight.bold),
+                        'Feuling Connections,\nSparking Conversation',
+                        style: TextStyle(
+                            fontSize: 24,
+                            color: Colors.red,
+                            fontWeight: FontWeight.bold),
                         textAlign: TextAlign.center,
                       ),
                     ),
                   ),
                 if (_controller.value >= 0.9)
                   Positioned(
-                    bottom: 50 + (_controller.value - 0.9) * 100,
+                    bottom: 30 + (_controller.value - 0.9) * 100,
                     child: Opacity(
                       opacity: _opacityAnimation.value,
-                      child: ElevatedButton(
-                       
-                        onPressed: () {
-                          Navigator.push(
-                          context,  
-                       MaterialPageRoute(builder: (context) => const SignUpScreen())
-                      );
-                      },
-                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                          foregroundColor: Colors.white,
-                          padding: const EdgeInsets.all(10)
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                              builder: (ctx) => SignUpScreen()));
+                        },
+                        child: Container(
+                          height: 70,
+                          width: 340,
+                          decoration: BoxDecoration(
+                            color: AppColor.redColor,
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                          margin: EdgeInsets.all(12),
+                          child: Center(
+                            child: Text('Start Your Journey Now',
+                                style: GoogleFonts.montserrat(
+                                  textStyle: TextStyle(
+                                    color: AppColor.whiteColor,
+                                    fontSize: 21,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                )),
+                          ),
                         ),
-                        child: const Text('Start your Journey Now'),
                       ),
                     ),
                   ),
