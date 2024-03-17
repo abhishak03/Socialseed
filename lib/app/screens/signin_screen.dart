@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -66,8 +67,6 @@ class _SignInScreenState extends State<SignInScreen> {
 
   Widget getTextFieldWithPassword(
       TextEditingController controller, String label) {
-    bool isPressed = false; // Assuming you have this boolean in your class
-
     return Container(
       height: 66,
       width: double.infinity,
@@ -155,6 +154,9 @@ class _SignInScreenState extends State<SignInScreen> {
             // Submit Button
             GestureDetector(
               onTap: () {
+                setState(() {
+                  _isSigningUp = true;
+                });
                 loginUser();
               },
               child: Container(
@@ -168,10 +170,16 @@ class _SignInScreenState extends State<SignInScreen> {
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Center(
-                  child: Text(
-                    "Login",
-                    style: TextConst.headingStyle(18, AppColor.whiteColor),
-                  ),
+                  child: !_isSigningUp
+                      ? Text(
+                          "Login",
+                          style:
+                              TextConst.headingStyle(18, AppColor.whiteColor),
+                        )
+                      : CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
                 ),
               ),
             ),
@@ -213,6 +221,7 @@ class _SignInScreenState extends State<SignInScreen> {
         .signInUser(
           email: _emailController.text,
           password: _passwordController.text,
+          ctx: context,
         )
         .then((val) => _clear());
   }
@@ -221,6 +230,7 @@ class _SignInScreenState extends State<SignInScreen> {
     setState(() {
       _emailController.clear();
       _passwordController.clear();
+      _isSigningUp = false;
     });
   }
 
@@ -235,7 +245,8 @@ class _SignInScreenState extends State<SignInScreen> {
           }
 
           if (state is CredentialFailure) {
-            print('Invalid Details');
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text('Invalid Credentials')));
           }
         },
         builder: (context, state) {

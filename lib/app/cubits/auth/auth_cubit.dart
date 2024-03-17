@@ -1,9 +1,9 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:socialseed/domain/usecases/get_current_uid_usecase.dart';
-import 'package:socialseed/domain/usecases/is_signin_usecase.dart';
-import 'package:socialseed/domain/usecases/sign_out_usecase.dart';
+import 'package:socialseed/domain/usecases/user/get_current_uid_usecase.dart';
+import 'package:socialseed/domain/usecases/user/is_signin_usecase.dart';
+import 'package:socialseed/domain/usecases/user/sign_out_usecase.dart';
 
 part 'auth_state.dart';
 

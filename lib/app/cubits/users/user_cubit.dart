@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:socialseed/domain/entities/user_entity.dart';
-import 'package:socialseed/domain/usecases/get_user_usecase.dart';
-import 'package:socialseed/domain/usecases/update_user_usecase.dart';
+import 'package:socialseed/domain/usecases/user/get_user_usecase.dart';
+import 'package:socialseed/domain/usecases/user/update_user_usecase.dart';
 
 part 'user_state.dart';
 

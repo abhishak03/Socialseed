@@ -1,9 +1,15 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
 import 'package:socialseed/data/data_source/remote_datasource.dart';
 import 'package:socialseed/data/models/user_model.dart';
 import 'package:socialseed/domain/entities/user_entity.dart';
+import 'package:socialseed/utils/constants/color_const.dart';
 import 'package:socialseed/utils/constants/firebase_const.dart';
+import 'package:uuid/uuid.dart';
 
 class RemoteDataSourceImpl implements RemoteDataSource {
   final FirebaseAuth firebaseAuth;
@@ -74,19 +80,39 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   Future<bool> isSignIn() async => firebaseAuth.currentUser?.uid != null;
 
   @override
-  Future<void> signInUser(UserEntity user) async {
+  Future<void> signInUser(UserEntity user, BuildContext context) async {
     try {
       if (user.email!.isNotEmpty || user.password!.isNotEmpty) {
         await firebaseAuth.signInWithEmailAndPassword(
           email: user.email!,
           password: user.password!,
         );
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Login Successfull',
+            ),
+            backgroundColor: Colors.green,
+          ),
+        );
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        print('user not found');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+          'User Not Exist',
+        )));
       } else if (e.code == 'wrong-password') {
-        print("Invalid Password");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+          'Password Is Wrong , Try Again',
+        )));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text(
+          'Something Went Wrong',
+        )));
       }
     }
   }
@@ -95,7 +121,7 @@ class RemoteDataSourceImpl implements RemoteDataSource {
   Future<void> signOut() async => await firebaseAuth.signOut();
 
   @override
-  Future<void> signUpUser(UserEntity user) async {
+  Future<void> signUpUser(UserEntity user, BuildContext context) async {
     try {
       if (user.email!.isNotEmpty || user.password!.isNotEmpty) {
         await firebaseAuth
@@ -107,15 +133,33 @@ class RemoteDataSourceImpl implements RemoteDataSource {
           if (value.user?.uid != null) {
             await createUser(user);
           }
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Account Creation Successfull',
+              ),
+              backgroundColor: Colors.green,
+            ),
+          );
         });
 
         return;
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
-        print('user already exists');
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            'User Already Exists',
+          ),
+          backgroundColor: AppColor.redColor,
+        ));
       } else {
-        print("Invalid Credential");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+            'Something Went wrong (${e.code})',
+          ),
+          backgroundColor: AppColor.redColor,
+        ));
       }
     }
   }
@@ -151,5 +195,26 @@ class RemoteDataSourceImpl implements RemoteDataSource {
       userInformation['followingCount'] = user.followingCount;
 
     userCollection.doc(user.uid).update(userInformation);
+  }
+
+  @override
+  Future<String?> uploadImageToStorage(
+      File? file, bool isPost, String child) async {
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child(child)
+        .child(firebaseAuth.currentUser!.uid);
+
+    if (isPost) {
+      String id = Uuid().v1();
+      ref = ref.child(id);
+
+      final uploadTask = ref.putFile(file!);
+
+      final imageUrl =
+          (await uploadTask.whenComplete(() {})).ref.getDownloadURL();
+
+      return await imageUrl;
+    }
   }
 }

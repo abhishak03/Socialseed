@@ -9,15 +9,16 @@ import 'package:socialseed/data/data_source/remote_datasource.dart';
 import 'package:socialseed/data/data_source/remote_datasource_impl.dart';
 import 'package:socialseed/data/repos/firebase_repository_impl.dart';
 import 'package:socialseed/domain/repos/firebase_repository.dart';
-import 'package:socialseed/domain/usecases/create_user_usecase.dart';
-import 'package:socialseed/domain/usecases/get_current_uid_usecase.dart';
-import 'package:socialseed/domain/usecases/get_single_user_usecase.dart';
-import 'package:socialseed/domain/usecases/get_user_usecase.dart';
-import 'package:socialseed/domain/usecases/is_signin_usecase.dart';
-import 'package:socialseed/domain/usecases/sign_in_usecase.dart';
-import 'package:socialseed/domain/usecases/sign_out_usecase.dart';
-import 'package:socialseed/domain/usecases/sign_up_usecase.dart';
-import 'package:socialseed/domain/usecases/update_user_usecase.dart';
+
+import 'package:socialseed/domain/usecases/user/create_user_usecase.dart';
+import 'package:socialseed/domain/usecases/user/get_current_uid_usecase.dart';
+import 'package:socialseed/domain/usecases/user/get_single_user_usecase.dart';
+import 'package:socialseed/domain/usecases/user/get_user_usecase.dart';
+import 'package:socialseed/domain/usecases/user/is_signin_usecase.dart';
+import 'package:socialseed/domain/usecases/user/sign_in_usecase.dart';
+import 'package:socialseed/domain/usecases/user/sign_out_usecase.dart';
+import 'package:socialseed/domain/usecases/user/sign_up_usecase.dart';
+import 'package:socialseed/domain/usecases/user/update_user_usecase.dart';
 
 final sl = GetIt.instance;
 

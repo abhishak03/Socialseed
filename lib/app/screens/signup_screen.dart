@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -12,6 +13,7 @@ import 'package:socialseed/domain/entities/user_entity.dart';
 import 'package:socialseed/utils/constants/color_const.dart';
 import 'package:socialseed/utils/constants/page_const.dart';
 import 'package:socialseed/utils/constants/text_const.dart';
+import 'package:uuid/uuid.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
@@ -31,7 +33,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   bool isPressed = false;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   DateTime _selectedDate = DateTime.now();
-  // bool _isSigningUp = false;
+  bool _isSigningUp = false;
   bool _isUploading = false;
 
   String _dobController = "Date of Birth";
@@ -89,7 +91,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
   }
 
   Widget getTextFieldWithPassword(
-      TextEditingController controller, String label, bool isPressed) {
+      TextEditingController controller, String label) {
     // Assuming you have this boolean in your class
 
     return Container(
@@ -173,34 +175,47 @@ class _SignUpScreenState extends State<SignUpScreen> {
     );
   }
 
-  void _signUp() {
+  void _signUp() async {
+    Reference ref = FirebaseStorage.instance
+        .ref()
+        .child('profiles')
+        .child("${_nameController.text}.jpg");
+
+    final uploadTask = ref.putFile(_image!);
+
+    final imageUrl = await (await uploadTask).ref.getDownloadURL();
+
     BlocProvider.of<CredentialCubit>(context)
         .signUpUser(
-            user: UserEntity(
-      username: _nameController.text,
-      fullname: _nameController.text,
-      email: _emailController.text,
-      password: _passwordController.text,
-      bio: "",
-      imageUrl: "",
-      friends: [],
-      milestones: [],
-      likedPages: [],
-      posts: [],
-      joinedDate: DateTime.now(),
-      isVerified: true,
-      badges: [],
-      followerCount: 0,
-      followingCount: 0,
-      stories: [],
-    ))
+      user: UserEntity(
+        username: _nameController.text,
+        fullname: _nameController.text,
+        email: _emailController.text,
+        password: _passwordController.text,
+        bio: "",
+        imageUrl: imageUrl,
+        friends: [],
+        milestones: [],
+        likedPages: [],
+        posts: [],
+        joinedDate: DateTime.now(),
+        isVerified: true,
+        badges: [],
+        followerCount: 0,
+        followingCount: 0,
+        stories: [],
+        imageFile: _image,
+      ),
+      ctx: context,
+    )
         .then((val) {
+      // If sign up is successful, clear the text fields and reset the signing up flag
       setState(() {
         _nameController.clear();
         _emailController.clear();
         _passwordController.clear();
         _confirmPasswordController.clear();
-        // _isSigningUp = false;
+        _isSigningUp = false;
       });
     });
   }
@@ -233,20 +248,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
             sizeVar(15),
             // Upload Image
+
             GestureDetector(
               onTap: selectImage,
               child: Center(
-                child: Container(
-                  height: 100,
-                  width: 100,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(
-                      color: AppColor.greyColor,
-                    ),
-                    borderRadius: BorderRadius.circular(50),
-                  ),
-                  child: Image.asset('assets/icons/user.png'),
+                child: CircleAvatar(
+                  radius: 50,
+                  backgroundColor: Colors.white,
+                  backgroundImage: _image != null ? FileImage(_image!) : null,
+                  child: _image == null
+                      ? Image.asset('assets/icons/user.png')
+                      : null,
                 ),
               ),
             ),
@@ -255,9 +267,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
             // Form Fields
             getTextField(_nameController, 'Name', TextInputType.name),
             getTextField(_emailController, 'Email', TextInputType.emailAddress),
-            getTextFieldWithPassword(_passwordController, 'Password', false),
+            getTextFieldWithPassword(_passwordController, 'Password'),
             getTextFieldWithPassword(
-                _confirmPasswordController, "Confirm Password", false),
+                _confirmPasswordController, "Confirm Password"),
 
             // dob
 
@@ -289,6 +301,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
             // Submit Button
             GestureDetector(
               onTap: () {
+                setState(() {
+                  _isSigningUp = true;
+                });
+
                 _signUp();
               },
               child: Container(
@@ -302,10 +318,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Center(
-                    child: Text(
-                  "Create Account",
-                  style: TextConst.headingStyle(18, AppColor.whiteColor),
-                )),
+                    child: !_isSigningUp
+                        ? Text(
+                            "Create Account",
+                            style:
+                                TextConst.headingStyle(18, AppColor.whiteColor),
+                          )
+                        : CircularProgressIndicator(
+                            color: Colors.white,
+                          )),
               ),
             ),
             Row(
@@ -368,7 +389,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
           }
 
           if (state is CredentialFailure) {
-            print("Invalid Information");
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text(state.message),
+              backgroundColor: Colors.red,
+            ));
           }
         },
         builder: (context, state) {

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:socialseed/domain/entities/user_entity.dart';
-import 'package:socialseed/domain/usecases/get_single_user_usecase.dart';
+import 'package:socialseed/domain/usecases/user/get_single_user_usecase.dart';
 
 part 'get_single_user_state.dart';
 
