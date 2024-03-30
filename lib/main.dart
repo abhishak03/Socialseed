@@ -5,6 +5,7 @@ import 'package:socialseed/app/cubits/credential/credential_cubit.dart';
 import 'package:socialseed/app/cubits/get_single_user/get_single_user_cubit.dart';
 import 'package:socialseed/app/cubits/users/user_cubit.dart';
 import 'package:socialseed/app/screens/home_screen.dart';
+import 'package:socialseed/app/screens/post_screen.dart';
 import 'package:socialseed/app/screens/signin_screen.dart';
 import 'package:socialseed/app/screens/signup_screen.dart';
 import 'package:socialseed/app/widgets/opacity_leaf_animation.dart';
@@ -31,35 +32,34 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => di.sl<AuthCubit>()..appStarted(context)),
-        BlocProvider(create: (_) => di.sl<CredentialCubit>()),
-        BlocProvider(create: (_) => di.sl<UserCubit>()),
-        BlocProvider(create: (_) => di.sl<GetSingleUserCubit>()),
-      ],
-      child: MaterialApp(
-        title: "Socialseed",
-        darkTheme: ThemeData.dark(),
-        debugShowCheckedModeBanner: false,
-        onGenerateRoute: OnGenerateRoutes.route,
-        initialRoute: "/",
-        routes: {
-          "/": (ctx) {
-            return BlocBuilder<AuthCubit, AuthState>(
-              builder: (context, state) {
-                if (state is Authenticated) {
-                  return HomeScreen(
-                    uid: state.uid,
-                  );
-                } else {
-                  return SplashScreen();
-                }
-              },
-            );
-          },
-        },
-      ),
+    // return MultiBlocProvider(
+    //   providers: [
+    //     BlocProvider(create: (_) => di.sl<AuthCubit>()..appStarted(context)),
+    //     BlocProvider(create: (_) => di.sl<CredentialCubit>()),
+    //     BlocProvider(create: (_) => di.sl<UserCubit>()),
+    //     BlocProvider(create: (_) => di.sl<GetSingleUserCubit>()),
+    //   ],
+    //   child: MaterialApp(
+    //     title: "Socialseed",
+    //     darkTheme: ThemeData.dark(),
+    //     debugShowCheckedModeBanner: false,
+    //     onGenerateRoute: OnGenerateRoutes.route,
+    //     initialRoute: "/",
+    //     routes: {
+    //       "/": (ctx) {
+    //         return BlocBuilder<AuthCubit, AuthState>(
+    //           builder: (context, state) {
+    //             if (state is Authenticated) {
+    //               return HomeScreen(
+    //                 uid: state.uid,
+    //               );
+    //             } else {
+    //               return SplashScreen();
+    //             }
+    //           },
+    //         );
+    return MaterialApp(
+      home: PostScreen(),
     );
   }
 }
